@@ -43,6 +43,7 @@ export default {
         .then((response) => {
           const token = response.data.token
           commit('SET_TOKEN', token)
+          commit('RESET_USER')
           LocalStorage.set('token', token)
           axios.defaults.headers.common.Authorization = 'Bearer ' + token
         })
@@ -58,6 +59,7 @@ export default {
           // console.log(response)
           localStorage.removeItem('token')
           commit('RESET_TOKEN')
+          commit('RESET_USER')
         })
         .catch((error) => {
           // console.log(error)

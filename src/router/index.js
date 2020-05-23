@@ -6,6 +6,12 @@ import { LoadingBar } from 'quasar'
 
 Vue.use(VueRouter)
 
+LoadingBar.setDefaults({
+  color: 'accent',
+  size: '5px',
+  position: 'top'
+})
+
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;

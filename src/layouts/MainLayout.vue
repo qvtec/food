@@ -36,6 +36,24 @@
 
         <q-separator />
 
+        <q-item :to="{ name: 'sampleList' }">
+          <q-item-section avatar>
+            <q-avatar color="secondary" text-color="white" icon="view_list" />
+          </q-item-section>
+          <q-item-section v-if="user">
+            サンプル一覧
+          </q-item-section>
+        </q-item>
+
+        <q-item :to="{ name: 'sampleForm' }">
+          <q-item-section avatar>
+            <q-avatar color="secondary" text-color="white" icon="view_list" />
+          </q-item-section>
+          <q-item-section v-if="user">
+            サンプルフォーム
+          </q-item-section>
+        </q-item>
+
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
@@ -94,7 +112,9 @@ export default {
   },
 
   mounted () {
-    this.$store.dispatch('auth/setUser')
+    if (!this.$store.state.auth.user) {
+      this.$store.dispatch('auth/setUser')
+    }
   },
 
   computed: {
