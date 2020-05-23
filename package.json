@@ -1,8 +1,8 @@
 {
-  "name": "test",
+  "name": "food",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
-  "productName": "Quasar App",
+  "description": "food",
+  "productName": "毎日のごはん",
   "cordovaId": "org.cordova.quasar.app",
   "capacitorId": "",
   "author": "qvtec <qvtec3@gmail.com>",

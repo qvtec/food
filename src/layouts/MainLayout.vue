@@ -9,10 +9,10 @@
           <!-- <q-avatar>
             <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
           </q-avatar> -->
-          Quasar App
+          毎日のごはん
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
@@ -36,29 +36,41 @@
 
         <q-separator />
 
-        <q-item :to="{ name: 'sampleList' }">
+        <q-item :to="{ name: 'top' }">
           <q-item-section avatar>
-            <q-avatar color="secondary" text-color="white" icon="view_list" />
+            <q-avatar color="secondary" text-color="white" icon="home" />
           </q-item-section>
           <q-item-section v-if="user">
-            サンプル一覧
+            TOP
           </q-item-section>
         </q-item>
 
-        <q-item :to="{ name: 'sampleForm' }">
+        <q-item :to="{ name: 'plan' }">
           <q-item-section avatar>
-            <q-avatar color="secondary" text-color="white" icon="view_list" />
+            <q-avatar color="secondary" text-color="white" icon="event_available" />
           </q-item-section>
           <q-item-section v-if="user">
-            サンプルフォーム
+            予定
           </q-item-section>
         </q-item>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        <q-item :to="{ name: 'form' }">
+          <q-item-section avatar>
+            <q-avatar color="secondary" text-color="white" icon="add" />
+          </q-item-section>
+          <q-item-section v-if="user">
+            登録
+          </q-item-section>
+        </q-item>
+
+        <q-item :to="{ name: 'list' }">
+          <q-item-section avatar>
+            <q-avatar color="secondary" text-color="white" icon="list" />
+          </q-item-section>
+          <q-item-section v-if="user">
+            一覧
+          </q-item-section>
+        </q-item>
 
         <q-separator />
 
@@ -79,35 +91,11 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink'
-
 export default {
   name: 'MainLayout',
-
-  components: {
-    EssentialLink
-  },
-
   data () {
     return {
-      left: false,
-      essentialLinks: [
-        {
-          title: 'Docs1',
-          icon: 'school',
-          link: 'https://quasar.dev'
-        },
-        {
-          title: 'Docs2',
-          icon: 'school',
-          link: 'https://quasar.dev'
-        },
-        {
-          title: 'Docs3',
-          icon: 'school',
-          link: 'https://quasar.dev'
-        }
-      ]
+      left: false
     }
   },
 

@@ -7,7 +7,7 @@
           <!-- <q-avatar>
             <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
           </q-avatar> -->
-          Quasar App
+          毎日のごはん
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
