@@ -1,98 +1,325 @@
 <template>
-  <q-card style="min-width: 300px">
-    <q-card-section class="row items-center q-pb-none">
-      <div class="text-subtitle1">{{form.date}}</div>
-      <q-space />
-      <q-btn icon="close" flat round dense v-close-popup />
-    </q-card-section>
-
+  <q-card flat bordered class="q-mt-md" style="max-width: 600px">
     <q-card-section>
-      <q-img src="https://cdn.quasar.dev/img/chicken-salad.jpg" />
-    </q-card-section>
+      <div class="row q-col-gutter-sm">
 
-    <q-card-section>
-      <q-item class="q-pa-none">
-        <q-item-section side>
-          <q-icon name="restaurant" size="xs" />
-        </q-item-section>
-        <q-item-section>
-          <q-slider
-            v-model="form.amount_rate"
-            :min="-3"
-            :max="3"
-            markers
-            snap
-            label
-            label-always
-          />
-        </q-item-section>
-        <q-item-section side>
-          <q-icon name="restaurant" size="lg" />
-        </q-item-section>
-      </q-item>
+        <div class="col-sm-12 col-lg-6">
+          <qvt-date v-model="form.date" />
+        </div>
 
-      <div>{{ items.menu1 }}</div>
-      <q-rating size="2.0em" v-model="form.menu1_point" :max="5" color="primary" icon="star_border" icon-selected="star" />
-      <div>{{ items.menu2 }}</div>
-      <q-rating size="2.0em" v-model="form.menu2_point" :max="5" color="primary" icon="star_border" icon-selected="star" />
-      <div>{{ items.menu3 }}</div>
-      <q-rating size="2.0em" v-model="form.menu3_point" :max="5" color="primary" icon="star_border" icon-selected="star" />
-    </q-card-section>
+        <div class="col-12">
+          <q-file outlined dense v-model="form.picture" label="画像">
+            <template v-slot:prepend>
+              <q-icon name="attach_file" />
+            </template>
+          </q-file>
+        </div>
 
-    <q-card-section>
-      <qvt-input v-model="form.memo" label="メモ" type="textarea" />
+        <div class="col-12">
+          <qvt-input v-model="form.memo" label="メモ" type="textarea" />
+        </div>
+
+        <div class="col-12">
+          <q-tabs
+            v-model="tab"
+            dense
+            class="text-grey"
+            active-color="primary"
+            indicator-color="primary"
+            align="justify"
+            narrow-indicator
+          >
+            <q-tab name="menu1" label="献立1" />
+            <q-tab name="menu2" label="献立2" />
+            <q-tab name="menu3" label="献立3" />
+            <q-tab name="menu4" label="献立4" />
+            <q-tab name="menu5" label="献立5" />
+          </q-tabs>
+
+          <q-separator />
+
+          <q-tab-panels v-model="tab" animated>
+            <q-tab-panel name="menu1" class="row q-col-gutter-sm">
+              <div class="col-12">
+                <qvt-input v-model="form.menu[0].name" label="名前" />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[0].url" label="URL" preIcon="link" afterIcon="search" />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[0].subname" label="" :readonly="true" />
+              </div>
+
+              <div v-for="n of 6" :key="n" class="col-2">
+                <qvt-input v-model="form.menu[0].material[n]" />
+              </div>
+
+              <div class="col-12">
+                <qvt-select v-model="form.menu[0].type" label="種類" :options="typeOptions" />
+              </div>
+
+              <div class="col-12">
+                <q-rating
+                  v-model="form.menu[0].rate"
+                  size="2.5em"
+                  color="primary"
+                  icon="star_border"
+                  icon-selected="star"
+                />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[0].memo" label="メモ" type="textarea" />
+              </div>
+            </q-tab-panel>
+
+            <q-tab-panel name="menu2" class="row q-col-gutter-sm">
+              <div class="col-12">
+                <qvt-input v-model="form.menu[1].name" label="名前" />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[1].url" label="URL" preIcon="link" afterIcon="search" />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[1].subname" label="" :readonly="true" />
+              </div>
+
+              <div v-for="n of 6" :key="n" class="col-2">
+                <qvt-input v-model="form.menu[1].material[n]" />
+              </div>
+
+              <div class="col-12">
+                <qvt-select v-model="form.menu[1].type" label="種類" :options="typeOptions" />
+              </div>
+
+              <div class="col-12">
+                <q-rating
+                  v-model="form.menu[1].rate"
+                  size="2.5em"
+                  color="primary"
+                  icon="star_border"
+                  icon-selected="star"
+                />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[1].memo" label="メモ" type="textarea" />
+              </div>
+            </q-tab-panel>
+
+            <q-tab-panel name="menu3" class="row q-col-gutter-sm">
+              <div class="col-12">
+                <qvt-input v-model="form.menu[2].name" label="名前" />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[2].url" label="URL" preIcon="link" afterIcon="search" />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[2].subname" label="" :readonly="true" />
+              </div>
+
+              <div v-for="n of 6" :key="n" class="col-2">
+                <qvt-input v-model="form.menu[2].material[n]" />
+              </div>
+
+              <div class="col-12">
+                <qvt-select v-model="form.menu[2].type" label="種類" :options="typeOptions" />
+              </div>
+
+              <div class="col-12">
+                <q-rating
+                  v-model="form.menu[2].rate"
+                  size="2.5em"
+                  color="primary"
+                  icon="star_border"
+                  icon-selected="star"
+                />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[2].memo" label="メモ" type="textarea" />
+              </div>
+            </q-tab-panel>
+
+            <q-tab-panel name="menu4" class="row q-col-gutter-sm">
+              <div class="col-12">
+                <qvt-input v-model="form.menu[3].name" label="名前" />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[3].url" label="URL" preIcon="link" afterIcon="search" />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[3].subname" label="" :readonly="true" />
+              </div>
+
+              <div v-for="n of 6" :key="n" class="col-2">
+                <qvt-input v-model="form.menu[3].material[n]" />
+              </div>
+
+              <div class="col-12">
+                <qvt-select v-model="form.menu[3].type" label="種類" :options="typeOptions" />
+              </div>
+
+              <div class="col-12">
+                <q-rating
+                  v-model="form.menu[3].rate"
+                  size="2.5em"
+                  color="primary"
+                  icon="star_border"
+                  icon-selected="star"
+                />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[3].memo" label="メモ" type="textarea" />
+              </div>
+            </q-tab-panel>
+
+            <q-tab-panel name="menu5" class="row q-col-gutter-sm">
+              <div class="col-12">
+                <qvt-input v-model="form.menu[4].name" label="名前" />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[4].url" label="URL" preIcon="link" afterIcon="search" />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[4].subname" label="" :readonly="true" />
+              </div>
+
+              <div v-for="n of 6" :key="n" class="col-2">
+                <qvt-input v-model="form.menu[4].material[n]" />
+              </div>
+
+              <div class="col-12">
+                <qvt-select v-model="form.menu[4].type" label="種類" :options="typeOptions" />
+              </div>
+
+              <div class="col-12">
+                <q-rating
+                  v-model="form.menu[4].rate"
+                  size="2.5em"
+                  color="primary"
+                  icon="star_border"
+                  icon-selected="star"
+                />
+              </div>
+
+              <div class="col-12">
+                <qvt-input v-model="form.menu[4].memo" label="メモ" type="textarea" />
+              </div>
+            </q-tab-panel>
+
+          </q-tab-panels>
+        </div>
+
+      </div>
     </q-card-section>
 
     <q-card-actions>
-      <q-btn class="full-width" color="primary" :disable="loading" label="登録" @click="emitAdd(items.id)" />
+      <q-btn v-if="editId==0" class="full-width" color="primary" :disable="loading" label="登録" @click="add" />
+      <q-btn v-else class="full-width" color="primary" :disable="loading" label="編集" @click="edit(editId)" />
     </q-card-actions>
   </q-card>
 </template>
 
 <script>
+import qvtDate from '../Form/QvtDate'
 import qvtInput from '../Form/QvtInput'
+import qvtSelect from '../Form/QvtSelect'
+import { date } from 'quasar'
 
 export default {
   data () {
     return {
+      loading: false,
+      tab: 'menu1',
+      typeOptions: ['和食', '洋食', '中華', 'イタリアン', '韓国料理', 'アジア料理', 'その他'],
       form: {
-        date: '2020/05/21',
-        memo: '',
-        amount_rate: 0,
-        menu1_point: 3,
-        menu2_point: 5,
-        menu3_point: 0,
-        menu4_point: 0,
-        menu5_point: 0
-      },
-      items: {
-        id: 1,
-        date: '2020/05/23',
-        menu1: '鶏皮甘辛焼き',
-        menu2: 'サツマイモ餅',
-        menu3: '無限ズッキーニ',
-        menu4: '',
-        menu5: '',
-        menu1_point: 3,
-        menu2_point: 3,
-        menu3_point: 3,
-        menu4_point: 0,
-        menu5_point: 0
+        date: date.formatDate(Date.now(), 'YYYY/MM/DD'),
+        picture: null,
+        menu: {
+          0: {
+            name: '',
+            url: '',
+            subname: '',
+            type: '',
+            rate: 0,
+            material: []
+          },
+          1: {
+            name: '',
+            url: '',
+            subname: '',
+            type: '',
+            rate: 0,
+            material: []
+          },
+          2: {
+            name: '',
+            url: '',
+            subname: '',
+            type: '',
+            rate: 0,
+            material: []
+          },
+          3: {
+            name: '',
+            url: '',
+            subname: '',
+            type: '',
+            rate: 0,
+            material: []
+          },
+          4: {
+            name: '',
+            url: '',
+            subname: '',
+            type: '',
+            rate: 0,
+            material: []
+          }
+        }
       }
     }
   },
   components: {
-    qvtInput
+    qvtInput,
+    qvtDate,
+    qvtSelect
   },
   props: {
-    loading: {
-      type: Boolean,
-      required: false
+    editId: {
+      type: Number,
+      required: false,
+      default: 0
     }
   },
   methods: {
-    emitAdd (id) {
-      this.$emit('edit', id)
+    add () {
+      this.loading = true
+      console.log(this.form)
+      setTimeout(() => {
+        this.loading = false
+        this.$emit('closeAdd')
+      }, 500)
+    },
+    edit (id) {
+      this.loading = true
+      console.log(this.form)
+      setTimeout(() => {
+        this.loading = false
+        this.$emit('closeAdd')
+      }, 500)
     }
   }
 }

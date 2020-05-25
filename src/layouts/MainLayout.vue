@@ -45,30 +45,39 @@
           </q-item-section>
         </q-item>
 
+        <q-item :to="{ name: 'food' }">
+          <q-item-section avatar>
+            <q-avatar color="secondary" text-color="white" icon="add" />
+          </q-item-section>
+          <q-item-section v-if="user">
+            献立登録
+          </q-item-section>
+        </q-item>
+
+        <q-item :to="{ name: 'menu' }">
+          <q-item-section avatar>
+            <q-avatar color="secondary" text-color="white" icon="list" />
+          </q-item-section>
+          <q-item-section v-if="user">
+            メニュー
+          </q-item-section>
+        </q-item>
+
+        <q-item :to="{ name: 'eat' }">
+          <q-item-section avatar>
+            <q-avatar color="secondary" text-color="white" icon="restaurant" />
+          </q-item-section>
+          <q-item-section v-if="user">
+            食事
+          </q-item-section>
+        </q-item>
+
         <q-item :to="{ name: 'plan' }">
           <q-item-section avatar>
             <q-avatar color="secondary" text-color="white" icon="event_available" />
           </q-item-section>
           <q-item-section v-if="user">
             予定
-          </q-item-section>
-        </q-item>
-
-        <q-item :to="{ name: 'form' }">
-          <q-item-section avatar>
-            <q-avatar color="secondary" text-color="white" icon="add" />
-          </q-item-section>
-          <q-item-section v-if="user">
-            登録
-          </q-item-section>
-        </q-item>
-
-        <q-item :to="{ name: 'list' }">
-          <q-item-section avatar>
-            <q-avatar color="secondary" text-color="white" icon="list" />
-          </q-item-section>
-          <q-item-section v-if="user">
-            一覧
           </q-item-section>
         </q-item>
 

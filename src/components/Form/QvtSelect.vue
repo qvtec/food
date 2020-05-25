@@ -6,7 +6,11 @@
     :options="options"
     stack-label
     :label="label"
-  />
+  >
+    <template v-slot:append>
+      <q-icon name="close" @click.stop="selected = ''" class="cursor-pointer" />
+    </template>
+  </q-select>
 </template>
 
 <script>

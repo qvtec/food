@@ -12,10 +12,11 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     meta: { authRequired: true },
     children: [
-      { path: '', name: 'top', component: () => import('pages/Index.vue') },
+      { path: 'top', name: 'top', component: () => import('pages/Index.vue') },
+      { path: 'food', name: 'food', component: () => import('pages/Food.vue') },
+      { path: 'menu', name: 'menu', component: () => import('pages/Menu.vue') },
+      { path: 'eat', name: 'eat', component: () => import('pages/Eat.vue') },
       { path: 'plan', name: 'plan', component: () => import('pages/Plan.vue') },
-      { path: 'list', name: 'list', component: () => import('pages/List.vue') },
-      { path: 'form', name: 'form', component: () => import('pages/Form.vue') },
       { path: 'sample-list', name: 'sampleList', component: () => import('pages/SampleList.vue') },
       { path: 'sample-form', name: 'sampleForm', component: () => import('pages/SampleForm.vue') }
     ]

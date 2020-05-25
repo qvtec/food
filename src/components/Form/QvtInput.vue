@@ -7,6 +7,7 @@
     :type="type"
     :placeholder="placeholder"
     :prefix="prefix"
+    :readonly="readonly"
   >
     <template v-slot:before v-if="beforeIcon.length>0">
       <q-btn round dense flat :icon="beforeIcon" />
@@ -34,7 +35,8 @@ export default {
     prefix: { type: String, required: false, default: '' },
     preIcon: { type: String, required: false, default: '' },
     beforeIcon: { type: String, required: false, default: '' },
-    afterIcon: { type: String, required: false, default: '' }
+    afterIcon: { type: String, required: false, default: '' },
+    readonly: { type: Boolean, required: false, default: false }
   },
   computed: {
     inputValue: {

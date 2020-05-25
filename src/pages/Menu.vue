@@ -1,27 +1,27 @@
 <template>
   <div class="q-pa-md">
 
-    <SampleSearch :loading="this.loading" @search="search()" />
+    <MenuSearch :loading="this.loading" @search="search()" />
 
-    <SampleList :items="this.items" :loading="this.loading" @delete="del" @openEdit="openEdit" @openAdd="openAdd" />
+    <MenuList :items="this.items" :loading="this.loading" @delete="del" @openEdit="openEdit" @openAdd="openAdd" />
 
     <q-dialog v-model="addDialog">
-      <SampleAdd :loading="this.loading" :title="this.addFormTitle" @add="add()" />
+      <MenuAdd :loading="this.loading" :editId="this.editId" @add="add" @edit="edit" />
     </q-dialog>
   </div>
 </template>
 
 <script>
-import SampleList from '../components/Sample/List'
-import SampleAdd from '../components/Sample/Add'
-import SampleSearch from '../components/Sample/Search'
+import MenuList from '../components/Menu/List'
+import MenuAdd from '../components/Menu/Add'
+import MenuSearch from '../components/Menu/Search'
 
 export default {
   data () {
     return {
       addDialog: false,
       loading: false,
-      addFormTitle: '新規登録',
+      editId: '',
       items: {
         filter: '',
         pagination: {
@@ -168,16 +168,17 @@ export default {
     }
   },
   components: {
-    SampleList,
-    SampleAdd,
-    SampleSearch
+    MenuList,
+    MenuAdd,
+    MenuSearch
   },
   methods: {
     openAdd () {
+      this.editId = 0
       this.addDialog = true
     },
     openEdit (id) {
-      this.addFormTitle = '編集'
+      this.editId = id
       this.addDialog = true
     },
     search () {
@@ -193,7 +194,11 @@ export default {
       }, 500)
     },
     edit (id) {
-
+      this.loading = true
+      setTimeout(() => {
+        this.addDialog = false
+        this.loading = false
+      }, 500)
     },
     del (id) {
       this.loading = true
