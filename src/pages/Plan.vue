@@ -33,7 +33,12 @@
             </template>
           </q-table>
 
-          <PlanFab v-for="(menu, key) in menus" :key="key" :item="menu" @delete="menuDel(menu)" @prev="movePage(menu, 'prev')" @next="movePage(menu, 'next')" />
+          <PlanFab v-for="(menu, key) in menus" :key="key" :item="menu"
+            @delete="menuDel(menu)"
+            @prev="movePage(menu, 'prev')"
+            @next="movePage(menu, 'next')"
+            @save="savePos(menu)"
+           />
 
         </q-page>
       </q-page-container>
@@ -77,70 +82,17 @@ export default {
         text: ''
       },
       menus: [],
-      menusData: [
-        {
-          id: 1,
-          date: '2020-06-01',
-          name: '豚の生姜焼き',
-          pos: [60, 50]
-        },
-        {
-          id: 2,
-          date: '2020-06-01',
-          name: 'トマトスープ',
-          pos: [60, 70]
-        },
-        {
-          id: 3,
-          date: '2020-06-01',
-          name: 'かぼちゃシチュー',
-          pos: [170, 50]
-        },
-        {
-          id: 4,
-          date: '2020-06-01',
-          name: '鯖',
-          pos: [170, 70]
-        },
-        {
-          id: 5,
-          date: '2020-06-08',
-          name: 'ブンチャー',
-          pos: [60, 50]
-        },
-        {
-          id: 6,
-          date: '2020-06-08',
-          name: 'カレー',
-          pos: [60, 70]
-        },
-        {
-          id: 7,
-          date: '2020-06-08',
-          name: 'カレイの煮つけ',
-          pos: [170, 50]
-        },
-        {
-          id: 8,
-          date: '2020-06-08',
-          name: 'ハンバーグ',
-          pos: [170, 70]
-        }
-      ],
+      menusData: [],
       searchDay: '',
-      maxMenuId: 8,
       maxDays: 35
     }
   },
 
-  mounted () {
-  },
-
   components: {
     qvtInput,
+    qvtSpinner,
     PlanSearch,
-    PlanFab,
-    qvtSpinner
+    PlanFab
   },
 
   methods: {
@@ -149,34 +101,51 @@ export default {
 
       this.loading = true
       setTimeout(() => {
-        // @todo 全メニューデータ取得API
-        this.pageUpdate()
-        this.loading = false
+        this.$axios
+          .post('food/plan/search', {
+            date: this.searchDay,
+            count: 35
+          })
+          .then((response) => {
+            this.menusData = response.data
+            this.pageUpdate()
+          })
+          .catch((error) => { console.log(error) })
+          .finally(() => { this.loading = false })
       }, 500)
     },
 
     menuAdd () {
       if (this.form.text === '') return
-      // @todo メニュー追加API
-      this.maxMenuId = this.maxMenuId + 1
-      this.menusData.push({
-        id: this.maxMenuId,
+
+      var data = {
         date: this.nowPageDate(),
         name: this.form.text,
         pos: [0, 0]
-      })
-      this.menus.push(this.menusData[this.menusData.length - 1])
-      this.form.text = ''
+      }
+
+      this.$axios
+        .post('food/plan', data)
+        .then((response) => {
+          data.id = response.data.id
+          this.menusData.push(data)
+          this.menus.push(data)
+          this.form.text = ''
+        })
+        .catch((error) => { console.log(error) })
     },
 
-    menuDel (menu) {
-      // @todo メニュー削除API
+    async menuDel (menu) {
       var menuData = this.menusData.find((v) => v.id === menu.id)
       this.menusData.splice(this.menusData.indexOf(menuData), 1)
       this.menus.splice(this.menus.indexOf(menu), 1)
+
+      await this.$axios
+        .delete('food/plan/' + menu.id)
+        .catch((error) => { console.log(error) })
     },
 
-    movePage (menu, type) {
+    async movePage (menu, type) {
       var nowPage = this.items.pagination.page
       var movevIndex = 0
       var movePage = nowPage
@@ -203,11 +172,26 @@ export default {
         this.menus[index].date = this.rows[movevIndex].date
         this.items.pagination.page = movePage
         this.pageUpdate()
+
+        await this.$axios
+          .put('food/plan/' + menu.id, {
+            date: this.rows[movevIndex].date
+          })
+          .catch((error) => { console.log(error) })
       }
+    },
+
+    async savePos (menu) {
+      await this.$axios
+        .put('food/plan/' + menu.id, {
+          pos: [menu.pos[0], menu.pos[1]]
+        })
+        .catch((error) => { console.log(error) })
     },
 
     setCalendar () {
       this.rows = []
+      this.menus = []
       var d = new Date(this.searchDay)
       d.setDate(d.getDate() - 1)
       for (var i = 0; i < this.maxDays; ++i) {

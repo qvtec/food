@@ -54,6 +54,7 @@ export default {
     },
 
     emitSearch () {
+      this.$parent.searchDay = this.form.beforeDate
       this.$emit('search')
     }
   }

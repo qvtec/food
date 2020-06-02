@@ -44,6 +44,10 @@ export default {
       }
 
       this.item.pos = this.moveFit(ev, pos)
+
+      if (ev.isFinal) {
+        this.$emit('save')
+      }
     },
 
     moveFit (ev, pos) {
