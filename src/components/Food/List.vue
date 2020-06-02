@@ -73,7 +73,7 @@
       </template>
 
       <template v-slot:loading>
-        <q-inner-loading showing color="primary" />
+        <qvt-spinner />
       </template>
     </q-table>
   </div>
@@ -81,6 +81,7 @@
 
 <script>
 import qvtDate from '../Form/QvtDate'
+import qvtSpinner from '../Common/QvtSpinner'
 import { date } from 'quasar'
 
 export default {
@@ -160,8 +161,21 @@ export default {
       }
     }
   },
+  mounted () {
+    // axios
+    //   .post('food/list', this.form)
+    //   .then(response => {
+    //     this.items = response.data.items
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //     this.errored = true
+    //   })
+    //   .finally(() => this.loading = false)
+  },
   components: {
-    qvtDate
+    qvtDate,
+    qvtSpinner
   },
   methods: {
     emitOpenEdit (id) {
@@ -170,6 +184,16 @@ export default {
     search () {
       this.loading = true
       setTimeout(() => {
+        // axios
+        //   .post('food/list', this.form)
+        //   .then(response => {
+        //     this.items = response.data.items
+        //   })
+        //   .catch(error => {
+        //     console.log(error)
+        //     this.errored = true
+        //   })
+        //   .finally(() => this.loading = false)
         this.loading = false
       }, 500)
     }

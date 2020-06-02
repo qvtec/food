@@ -45,14 +45,14 @@
               </div>
 
               <div class="col-12">
-                <qvt-input v-model="form.menu[0].url" label="URL" preIcon="link" afterIcon="search" />
+                <qvt-input v-model="form.menu[0].url" label="URL" preIcon="link" type="url" afterIcon="search" />
               </div>
 
               <div class="col-12">
                 <qvt-input v-model="form.menu[0].subname" label="" :readonly="true" />
               </div>
 
-              <div v-for="n of 6" :key="n" class="col-2">
+              <div v-for="n of 6" :key="n" class="col-xs-6 col-sm-4 col-lg-3">
                 <qvt-input v-model="form.menu[0].material[n]" />
               </div>
 
@@ -81,14 +81,14 @@
               </div>
 
               <div class="col-12">
-                <qvt-input v-model="form.menu[1].url" label="URL" preIcon="link" afterIcon="search" />
+                <qvt-input v-model="form.menu[1].url" label="URL" preIcon="link" type="url" afterIcon="search" />
               </div>
 
               <div class="col-12">
                 <qvt-input v-model="form.menu[1].subname" label="" :readonly="true" />
               </div>
 
-              <div v-for="n of 6" :key="n" class="col-2">
+              <div v-for="n of 6" :key="n" class="col-xs-6 col-sm-4 col-lg-3">
                 <qvt-input v-model="form.menu[1].material[n]" />
               </div>
 
@@ -117,14 +117,14 @@
               </div>
 
               <div class="col-12">
-                <qvt-input v-model="form.menu[2].url" label="URL" preIcon="link" afterIcon="search" />
+                <qvt-input v-model="form.menu[2].url" label="URL" preIcon="link" type="url" afterIcon="search" />
               </div>
 
               <div class="col-12">
                 <qvt-input v-model="form.menu[2].subname" label="" :readonly="true" />
               </div>
 
-              <div v-for="n of 6" :key="n" class="col-2">
+              <div v-for="n of 6" :key="n" class="col-xs-6 col-sm-4 col-lg-3">
                 <qvt-input v-model="form.menu[2].material[n]" />
               </div>
 
@@ -153,14 +153,14 @@
               </div>
 
               <div class="col-12">
-                <qvt-input v-model="form.menu[3].url" label="URL" preIcon="link" afterIcon="search" />
+                <qvt-input v-model="form.menu[3].url" label="URL" preIcon="link" type="url" afterIcon="search" />
               </div>
 
               <div class="col-12">
                 <qvt-input v-model="form.menu[3].subname" label="" :readonly="true" />
               </div>
 
-              <div v-for="n of 6" :key="n" class="col-2">
+              <div v-for="n of 6" :key="n" class="col-xs-6 col-sm-4 col-lg-3">
                 <qvt-input v-model="form.menu[3].material[n]" />
               </div>
 
@@ -189,14 +189,14 @@
               </div>
 
               <div class="col-12">
-                <qvt-input v-model="form.menu[4].url" label="URL" preIcon="link" afterIcon="search" />
+                <qvt-input v-model="form.menu[4].url" label="URL" preIcon="link" type="url" afterIcon="search" />
               </div>
 
               <div class="col-12">
                 <qvt-input v-model="form.menu[4].subname" label="" :readonly="true" />
               </div>
 
-              <div v-for="n of 6" :key="n" class="col-2">
+              <div v-for="n of 6" :key="n" class="col-xs-6 col-sm-4 col-lg-3">
                 <qvt-input v-model="form.menu[4].material[n]" />
               </div>
 
@@ -291,6 +291,26 @@ export default {
         }
       }
     }
+  },
+  mounted () {
+    if (this.editId === 0) {
+      return
+    }
+
+    // axios
+    //   .post('food/detail', this.editId)
+    //   .then(response => {
+    //     this.form = response.data
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //     this.errored = true
+    //   })
+    //   .finally(() => this.loading = false)
+    var now = new Date()
+    var yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1)
+    this.form.date = date.formatDate(yesterday, 'YYYY/MM/DD')
+    this.form.menu[0].name = '編集中料理名'
   },
   components: {
     qvtInput,

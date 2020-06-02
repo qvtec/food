@@ -16,7 +16,7 @@
       <q-icon :name="preIcon" />
     </template>
     <template v-slot:after v-if="afterIcon.length>0">
-      <q-btn round dense flat :icon="afterIcon" />
+      <q-btn round dense flat :icon="afterIcon" @click="afterIconClick" />
     </template>
   </q-input>
 </template>
@@ -37,6 +37,11 @@ export default {
     beforeIcon: { type: String, required: false, default: '' },
     afterIcon: { type: String, required: false, default: '' },
     readonly: { type: Boolean, required: false, default: false }
+  },
+  methods: {
+    afterIconClick () {
+      this.$emit('afterIconClick')
+    }
   },
   computed: {
     inputValue: {

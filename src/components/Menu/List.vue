@@ -83,12 +83,14 @@
     </template>
 
     <template v-slot:loading>
-      <q-inner-loading showing color="primary" />
+      <qvt-spinner />
     </template>
   </q-table>
 </template>
 
 <script>
+import qvtSpinner from '../Common/QvtSpinner'
+
 export default {
   props: {
     loading: {
@@ -100,6 +102,11 @@ export default {
       required: false
     }
   },
+
+  components: {
+    qvtSpinner
+  },
+
   methods: {
     emitOpenAdd () {
       this.$emit('openAdd')
