@@ -119,7 +119,15 @@ export default {
         rate: 0,
         amount_rate: 5
       },
-      typeOptions: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
+      typeOptions: [
+        { label: '和食', value: 1 },
+        { label: '洋食', value: 2 },
+        { label: '中華', value: 3 },
+        { label: 'イタリアン', value: 4 },
+        { label: '韓国料理', value: 5 },
+        { label: 'アジア料理', value: 6 },
+        { label: 'その他', value: 7 }
+      ],
       loading: false
     }
   },

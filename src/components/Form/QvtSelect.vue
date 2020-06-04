@@ -6,6 +6,7 @@
     :options="options"
     stack-label
     :label="label"
+    map-options
   >
     <template v-slot:append>
       <q-icon name="close" @click.stop="selected = ''" class="cursor-pointer" />
@@ -20,7 +21,7 @@ export default {
     event: 'change'
   },
   props: {
-    value: { type: String, required: false },
+    value: { required: false, validator: v => typeof v === 'number' || v === '' },
     label: { type: String, required: true },
     options: { type: Array, required: true, default () { return [] } }
   },
@@ -30,7 +31,7 @@ export default {
         return this.value
       },
       set (val) {
-        this.$emit('change', val)
+        this.$emit('change', val.value)
       }
     }
   }

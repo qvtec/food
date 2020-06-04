@@ -5,10 +5,10 @@
         <div class="row q-col-gutter-sm">
 
           <div class="col-sm-12 col-lg-6">
-            <qvt-date v-model="form.beforeDate" :rangeBefore="true" />
+            <qvt-date v-model="form.before_date" :errors="errors.before_date" :rangeBefore="true" />
           </div>
           <div class="col-sm-12 col-lg-6">
-            <qvt-date v-model="form.afterDate" />
+            <qvt-date v-model="form.after_date" :errors="errors.after_date" />
           </div>
 
         </div>
@@ -44,7 +44,7 @@
       <template v-slot:item="props">
         <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3">
           <q-card flat bordered>
-            <q-img src="https://cdn.quasar.dev/img/chicken-salad.jpg">
+            <q-img :src="props.row.path">
               <div class="absolute-bottom text-subtitle2">
                 {{ props.row.date }}
               </div>
@@ -56,9 +56,9 @@
                 icon="edit"
                 class="absolute"
                 style="top: 0; right: 12px; transform: translateY(-50%);"
-                @click="emitOpenEdit(props.row.id)"
+                @click="clickEdit(props.row.id)"
               />
-              <div  v-for="col in props.cols.filter(col => col.name !== 'date' && col.value.length>0)" :key="col.name">
+              <div v-for="col in props.cols.filter(col => col.name !== 'date')" :key="col.name">
                 {{ col.value }}
               </div>
             </q-card-section>
@@ -89,9 +89,10 @@ export default {
     return {
       loading: false,
       form: {
-        beforeDate: date.formatDate(Date.now(), 'YYYY/MM/DD'),
-        afterDate: date.formatDate(Date.now(), 'YYYY/MM/DD')
+        before_date: date.formatDate(Date.now(), 'YYYY/MM/01'),
+        after_date: date.formatDate(Date.now(), 'YYYY/MM/DD')
       },
+      errors: {},
       items: {
         filter: '',
         pagination: {
@@ -100,102 +101,50 @@ export default {
           page: 1,
           rowsPerPage: 0
         },
-        selected: [],
         visibleColumns: [
           'date', 'menu1', 'menu2', 'menu3', 'menu4', 'menu5'
         ],
         columns: [
-          {
-            name: 'date',
-            required: true,
-            label: '日付',
-            align: 'left',
-            field: row => row.date,
-            format: val => `${val}`,
-            sortable: true
-          },
-          { name: 'menu1', label: 'メニュー1', field: 'menu1', sortable: true },
-          { name: 'menu2', label: 'メニュー2', field: 'menu2', sortable: true },
-          { name: 'menu3', label: 'メニュー3', field: 'menu3', sortable: true },
-          { name: 'menu4', label: 'メニュー4', field: 'menu4', sortable: true },
-          { name: 'menu5', label: 'メニュー5', field: 'menu5', sortable: true }
+          { name: 'date', field: 'date', sortable: true },
+          { name: 'menu1', field: 'menu1', sortable: true },
+          { name: 'menu2', field: 'menu2', sortable: true },
+          { name: 'menu3', field: 'menu3', sortable: true },
+          { name: 'menu4', field: 'menu4', sortable: true },
+          { name: 'menu5', field: 'menu5', sortable: true }
         ],
-        data: [
-          {
-            id: 1,
-            date: '2020/05/23',
-            menu1: '鶏皮甘辛焼き',
-            menu2: 'サツマイモ餅',
-            menu3: '無限ズッキーニ',
-            menu4: '鶏皮甘辛焼き',
-            menu5: '無限ズッキーニ'
-          },
-          {
-            id: 2,
-            date: '2020/05/23',
-            menu1: '鶏皮甘辛焼き',
-            menu2: 'サツマイモ餅',
-            menu3: '無限ズッキーニ',
-            menu4: '',
-            menu5: ''
-          },
-          {
-            id: 3,
-            date: '2020/05/23',
-            menu1: '鶏皮甘辛焼き',
-            menu2: '',
-            menu3: '無限ズッキーニ',
-            menu4: '',
-            menu5: ''
-          },
-          {
-            id: 4,
-            date: '2020/05/23',
-            menu1: '鶏皮甘辛焼き',
-            menu2: 'サツマイモ餅',
-            menu3: '',
-            menu4: '',
-            menu5: ''
-          }
-        ]
+        data: []
       }
     }
   },
+
   mounted () {
-    // axios
-    //   .post('food/list', this.form)
-    //   .then(response => {
-    //     this.items = response.data.items
-    //   })
-    //   .catch(error => {
-    //     console.log(error)
-    //     this.errored = true
-    //   })
-    //   .finally(() => this.loading = false)
+    this.search()
   },
+
   components: {
     qvtDate,
     qvtSpinner
   },
+
   methods: {
-    emitOpenEdit (id) {
-      this.$emit('openEdit', id)
+    clickEdit (id) {
+      this.$emit('showEdit', id)
     },
+
     search () {
       this.loading = true
-      setTimeout(() => {
-        // axios
-        //   .post('food/list', this.form)
-        //   .then(response => {
-        //     this.items = response.data.items
-        //   })
-        //   .catch(error => {
-        //     console.log(error)
-        //     this.errored = true
-        //   })
-        //   .finally(() => this.loading = false)
-        this.loading = false
-      }, 500)
+
+      this.$axios
+        .get('food/main', { params: this.form })
+        .then(response => {
+          console.log(response.data)
+          this.items.data = response.data
+        })
+        .catch(error => {
+          console.log(error.response.data.errors)
+          this.errors = error.response.data.errors
+        })
+        .finally(() => { this.loading = false })
     }
   }
 }

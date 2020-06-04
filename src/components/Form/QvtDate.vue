@@ -1,5 +1,12 @@
 <template>
-  <q-input outlined dense v-model="date" mask="date">
+  <q-input
+    outlined
+    dense
+    v-model="date"
+    mask="date"
+    hide-bottom-space
+    :error="hasError"
+  >
     <template v-slot:append>
       <q-icon name="event" class="cursor-pointer">
         <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
@@ -8,12 +15,20 @@
             :locale="myLocale"
             v-model="date"
             :options="options"
-            @input="() => $refs.qDateProxy.hide()" />
+            @input="() => $refs.qDateProxy.hide()"
+           />
         </q-popup-proxy>
       </q-icon>
     </template>
+
     <template v-slot:after v-if="rangeBefore">
       <q-icon dense name="navigate_next" />
+    </template>
+
+    <template v-slot:error>
+      <div v-for="(error, key) in errors" :key="key">
+        {{ error }}
+      </div>
     </template>
   </q-input>
 </template>
@@ -38,7 +53,8 @@ export default {
   props: {
     value: { type: String, required: false },
     rangeBefore: { type: Boolean, required: false, default: false },
-    options: { type: Function, required: false }
+    options: { type: Function, required: false },
+    errors: { type: Array, required: false }
   },
   computed: {
     date: {
@@ -48,6 +64,10 @@ export default {
       set (val) {
         this.$emit('input', val)
       }
+    },
+
+    hasError () {
+      return typeof this.errors !== 'undefined' && this.errors.length > 0
     }
   }
 }

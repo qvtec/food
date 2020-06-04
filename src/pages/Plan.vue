@@ -54,6 +54,7 @@ import qvtSpinner from '../components/Common/QvtSpinner'
 import { date } from 'quasar'
 
 export default {
+  name: 'PagePlan',
   data () {
     return {
       loading: false,
@@ -124,13 +125,16 @@ export default {
         pos: [0, 0]
       }
 
+      this.menus.push(data)
+      this.form.text = ''
+
       this.$axios
         .post('food/plan', data)
         .then((response) => {
           data.id = response.data.id
           this.menusData.push(data)
+          this.menus.pop()
           this.menus.push(data)
-          this.form.text = ''
         })
         .catch((error) => { console.log(error) })
     },

@@ -8,15 +8,25 @@
     :placeholder="placeholder"
     :prefix="prefix"
     :readonly="readonly"
+    hide-bottom-space
+    :error="hasError"
   >
     <template v-slot:before v-if="beforeIcon.length>0">
       <q-btn round dense flat :icon="beforeIcon" />
     </template>
+
     <template v-slot:prepend v-if="preIcon.length>0">
       <q-icon :name="preIcon" />
     </template>
+
     <template v-slot:after v-if="afterIcon.length>0">
       <q-btn round dense flat :icon="afterIcon" @click="afterIconClick" />
+    </template>
+
+    <template v-slot:error>
+      <div v-for="(error, key) in errors" :key="key">
+        {{ error }}
+      </div>
     </template>
   </q-input>
 </template>
@@ -36,7 +46,8 @@ export default {
     preIcon: { type: String, required: false, default: '' },
     beforeIcon: { type: String, required: false, default: '' },
     afterIcon: { type: String, required: false, default: '' },
-    readonly: { type: Boolean, required: false, default: false }
+    readonly: { type: Boolean, required: false, default: false },
+    errors: { type: Array, required: false }
   },
   methods: {
     afterIconClick () {
@@ -51,6 +62,10 @@ export default {
       set (val) {
         this.$emit('input', val)
       }
+    },
+
+    hasError () {
+      return typeof this.errors !== 'undefined' && this.errors.length > 0
     }
   }
 }

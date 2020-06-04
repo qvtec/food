@@ -1,12 +1,12 @@
 <template>
   <div class="q-pa-md">
 
-    <MenuSearch :loading="this.loading" @search="search()" />
+    <MenuSearch :loading="loading" @search="search()" />
 
-    <MenuList :items="this.items" :loading="this.loading" @delete="del" @openEdit="openEdit" @openAdd="openAdd" />
+    <MenuList :items="items" :loading="loading" @delete="del" @openEdit="openEdit" @openAdd="openAdd" />
 
     <q-dialog v-model="addDialog">
-      <MenuAdd :loading="this.loading" :editId="this.editId" @add="add" @edit="edit" />
+      <MenuAdd :loading="loading" :editId="editId" @add="add" @edit="edit" />
     </q-dialog>
   </div>
 </template>
@@ -17,6 +17,7 @@ import MenuAdd from '../components/Menu/Add'
 import MenuSearch from '../components/Menu/Search'
 
 export default {
+  name: 'PageMenu',
   data () {
     return {
       addDialog: false,

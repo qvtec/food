@@ -1,37 +1,58 @@
 <template>
   <div class="q-pa-md">
-    <q-btn v-if="this.showList" color="accent" label="登録表示" @click="showList=false" />
-    <q-btn v-else color="secondary" label="一覧表示" @click="showListClick" />
+    <q-btn v-if="isList" color="accent" label="新規登録" @click="isList=false" />
+    <q-btn v-else color="secondary" label="一覧表示" @click="showList" />
 
-    <FoodList v-if="this.showList" @openEdit="openEdit" />
-    <FoodAdd v-else :editId="this.editId" @closeAdd="showListClick" />
+    <FoodList v-if="isList" @showEdit="showEdit" />
+    <FoodAdd v-else :editId="editId" :menuIds="menuIds" @close="showList" @openMenuAdd="openMenuAdd" />
 
+    <q-dialog v-model="menuDialog">
+      <MenuAdd @add="addMenu" />
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import FoodList from '../components/Food/List'
 import FoodAdd from '../components/Food/Add'
+import MenuAdd from '../components/Menu/Add'
 
 export default {
+  name: 'PageFood',
   data () {
     return {
-      showList: false,
-      editId: 0
+      loading: false,
+      menuDialog: false,
+      isList: false,
+      editId: 0,
+      menuIds: []
     }
   },
+
   components: {
     FoodList,
-    FoodAdd
+    FoodAdd,
+    MenuAdd
   },
+
   methods: {
-    showListClick () {
-      this.editId = 0
-      this.showList = true
+    openMenuAdd () {
+      this.menuDialog = true
     },
-    openEdit (id) {
+
+    showList () {
+      this.editId = 0
+      this.isList = true
+    },
+
+    showEdit (id) {
       this.editId = id
-      this.showList = false
+      this.isList = false
+    },
+
+    addMenu (id) {
+      this.menuIds.push(id)
+      this.menuDialog = false
     }
   }
 }

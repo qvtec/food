@@ -4,6 +4,7 @@ import createPersistedState from 'vuex-persistedstate'
 
 // import example from './module-example'
 import auth from './auth'
+import master from './master'
 
 Vue.use(Vuex)
 
@@ -20,7 +21,8 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       // example
-      auth
+      auth,
+      master
     },
 
     plugins: [
