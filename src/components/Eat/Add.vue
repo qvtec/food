@@ -1,5 +1,5 @@
 <template>
-  <q-card style="min-width: 300px">
+  <q-card style="max-width: 600px;">
     <q-card-section class="row items-center q-pb-none">
       <div class="text-subtitle1">{{date}}</div>
       <q-space />
@@ -17,13 +17,14 @@
         </q-item-section>
         <q-item-section>
           <q-slider
-            v-model="form.amount_point"
+            v-model="form.food_point.amount_point"
             :min="-3"
             :max="3"
             markers
             snap
             label
             label-always
+            style="min-width: 160px;"
           />
         </q-item-section>
         <q-item-section side>
@@ -31,19 +32,19 @@
         </q-item-section>
       </q-item>
 
-      <div v-for="(menu, key) in item.menus" :key="key">
+      <div v-for="(menu, key) in item.menus_point" :key="key">
         <div>{{ menu.name }}</div>
-        <q-rating size="2.0em" v-model="form.menu_points[key]" max="5" color="primary" icon="star_border" icon-selected="star" />
+        <q-rating size="2.5em" v-model="form.menus_point[key].point" max="5" color="primary" icon="star_border" icon-selected="star" />
       </div>
     </q-card-section>
 
     <q-card-section>
-      <qvt-input v-model="form.memo" label="メモ" type="textarea" :errors="errors.memo" />
+      <qvt-input v-model="form.food_point.memo" label="メモ" type="textarea" :errors="errors.memo" />
     </q-card-section>
 
     <q-card-actions>
-      <q-btn v-if="editId==0" class="full-width" color="accent" :disable="loading" label="登録" @click="add" />
-      <q-btn v-else class="full-width" color="secondary" :disable="loading" label="編集" @click="edit(editId)" />
+      <q-btn v-if="!isEdit" class="full-width" color="accent" :disable="loading" label="登録" @click="edit" />
+      <q-btn v-else class="full-width" color="secondary" :disable="loading" label="編集" @click="edit" />
     </q-card-actions>
   </q-card>
 </template>
@@ -57,34 +58,26 @@ export default {
     return {
       loading: false,
       form: {
-        memo: '',
-        amount_point: 0,
-        menu_points: [0, 0, 0, 0, 0]
+        food_point: {
+          amount_point: 0,
+          memo: ''
+        },
+        menus_point: []
       },
+      isEdit: false,
       errors: {}
     }
   },
 
-  mounted () {
-    if (this.editId === 0) {
-      return
+  created () {
+    if (this.item.food_point !== null) {
+      this.isEdit = true
+      this.form.food_point = this.item.food_point
     }
 
-    this.loading = true
-
-    // @todo pointデータ取得API
-    this.$axios
-      .get('food/eat/' + this.editId)
-      .then(response => {
-        console.log(response.data)
-        // var data = response.data
-        // this.form.date = date.formatDate(new Date(data.date), 'YYYY/MM/DD')
-        // this.form.picture = data.picture
-        // this.form.memo = data.memo
-        // this.form.menu_ids = data.menu_ids
-      })
-      .catch(error => { console.log(error.response) })
-      .finally(() => { this.loading = false })
+    if (this.item.menus_point.length > 0) {
+      this.form.menus_point = this.item.menus_point
+    }
   },
 
   components: {
@@ -92,57 +85,34 @@ export default {
   },
 
   props: {
-    editId: {
-      type: Number,
-      required: false,
-      default: 0
-    },
     item: {
       type: Object,
-      required: false
+      required: false,
+      default: null
     }
   },
 
   methods: {
-    add () {
+    edit () {
       this.loading = true
 
-      var data = {
-        food_id: this.item.id,
-        memo: this.form.memo,
-        amount_point: this.form.amount_point,
-        menus: this.item.menus,
-        menu_points: this.form.menu_points
-      }
-
       this.$axios
-        .post('food/eat', data)
+        .put('food/eat/' + this.item.id, this.form)
         .then((response) => {
-          console.log(response.data)
-          this.$emit('close')
+          this.editComplete()
         })
         .catch((error) => {
-          console.log(error.response.data.errors)
           this.errors = error.response.data.errors
         })
         .finally(() => { this.loading = false })
     },
 
-    edit (id) {
-      this.loading = true
-
-      // @todo 更新処理
-      this.$axios
-        .put('food/eat/' + id, this.form)
-        .then((response) => {
-          console.log(response.data)
-          this.$emit('close')
-        })
-        .catch((error) => {
-          console.log(error.response.data.errors)
-          this.errors = error.response.data.errors
-        })
-        .finally(() => { this.loading = false })
+    editComplete () {
+      this.$q.notify({
+        type: 'positive',
+        message: 'ごちそうさまでした'
+      })
+      this.$emit('update')
     }
   },
 

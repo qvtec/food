@@ -80,6 +80,22 @@ export default {
     }
   },
 
+  mounted () {
+    if (this.editId === 0) {
+      return
+    }
+
+    this.loading = true
+
+    this.$axios
+      .get('food/menu/' + this.editId)
+      .then(response => {
+        this.form = response.data
+      })
+      .catch(error => { console.log(error.response) })
+      .finally(() => { this.loading = false })
+  },
+
   components: {
     qvtInput,
     qvtSelect
@@ -100,19 +116,44 @@ export default {
       this.$axios
         .post('food/menu', this.form)
         .then((response) => {
-          this.$store.dispatch('master/menuOptions')
+          this.complete()
           this.$emit('add', response.data.id)
         })
         .catch((error) => {
-          console.log(error.response.data.errors)
-          this.errors = error.response.data.errors
+          this.fail(error)
         })
         .finally(() => { this.loading = false })
     },
 
     edit (id) {
-      // @todo メニュー編集API
-      this.$emit('edit', id)
+      this.loading = true
+
+      this.$axios
+        .put('food/menu/' + id, this.form)
+        .then((response) => {
+          this.complete()
+          this.$emit('edit', id)
+        })
+        .catch((error) => {
+          this.fail(error)
+        })
+        .finally(() => { this.loading = false })
+    },
+
+    complete () {
+      this.$q.notify({
+        type: 'positive',
+        message: '登録完了しました'
+      })
+      this.$store.dispatch('master/menuOptions')
+    },
+
+    fail (error) {
+      this.errors = error.response.data.errors
+      this.$q.notify({
+        type: 'negative',
+        message: '入力内容を確認してください'
+      })
     }
   }
 }

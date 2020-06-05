@@ -101,12 +101,15 @@ export default {
       this.setCalendar()
 
       this.loading = true
+
+      var params = {
+        date: this.searchDay,
+        count: 35
+      }
+
       setTimeout(() => {
         this.$axios
-          .post('food/plan/search', {
-            date: this.searchDay,
-            count: 35
-          })
+          .get('food/plan', { params: params })
           .then((response) => {
             this.menusData = response.data
             this.pageUpdate()

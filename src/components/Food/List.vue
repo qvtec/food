@@ -30,7 +30,6 @@
       :filter="items.filter"
       :loading="loading"
       :pagination.sync="items.pagination"
-      :visible-columns="items.visibleColumns"
     >
 
       <template v-slot:top-right>
@@ -44,7 +43,7 @@
       <template v-slot:item="props">
         <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3">
           <q-card flat bordered>
-            <q-img :src="props.row.path">
+            <q-img :src="props.row.path" @click="openPicture(props.row.path)">
               <div class="absolute-bottom text-subtitle2">
                 {{ props.row.date }}
               </div>
@@ -56,10 +55,10 @@
                 icon="edit"
                 class="absolute"
                 style="top: 0; right: 12px; transform: translateY(-50%);"
-                @click="clickEdit(props.row.id)"
+                @click="clickEdit(props.row)"
               />
-              <div v-for="col in props.cols.filter(col => col.name !== 'date')" :key="col.name">
-                {{ col.value }}
+              <div v-for="menu in props.row.menus" :key="menu.id">
+                {{ menu.name }}
               </div>
             </q-card-section>
             <q-separator />
@@ -76,6 +75,10 @@
         <qvt-spinner />
       </template>
     </q-table>
+
+    <q-dialog v-model="pictureDialog">
+      <q-img :src="path" />
+    </q-dialog>
   </div>
 </template>
 
@@ -101,19 +104,14 @@ export default {
           page: 1,
           rowsPerPage: 0
         },
-        visibleColumns: [
-          'date', 'menu1', 'menu2', 'menu3', 'menu4', 'menu5'
-        ],
         columns: [
           { name: 'date', field: 'date', sortable: true },
-          { name: 'menu1', field: 'menu1', sortable: true },
-          { name: 'menu2', field: 'menu2', sortable: true },
-          { name: 'menu3', field: 'menu3', sortable: true },
-          { name: 'menu4', field: 'menu4', sortable: true },
-          { name: 'menu5', field: 'menu5', sortable: true }
+          { name: 'menus', field: 'menus', sortable: true }
         ],
         data: []
-      }
+      },
+      pictureDialog: false,
+      path: ''
     }
   },
 
@@ -127,8 +125,8 @@ export default {
   },
 
   methods: {
-    clickEdit (id) {
-      this.$emit('showEdit', id)
+    clickEdit (row) {
+      this.$emit('showEdit', row)
     },
 
     search () {
@@ -137,14 +135,17 @@ export default {
       this.$axios
         .get('food/main', { params: this.form })
         .then(response => {
-          console.log(response.data)
           this.items.data = response.data
         })
         .catch(error => {
-          console.log(error.response.data.errors)
           this.errors = error.response.data.errors
         })
         .finally(() => { this.loading = false })
+    },
+
+    openPicture (path) {
+      this.pictureDialog = true
+      this.path = path
     }
   }
 }

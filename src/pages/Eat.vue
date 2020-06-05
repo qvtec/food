@@ -1,10 +1,10 @@
 <template>
   <div class="q-pa-md">
 
-    <EatList @openAdd="openAdd" />
+    <EatList @openAdd="openAdd" ref="list" />
 
     <q-dialog v-model="addDialog">
-      <EatAdd :item="item" @close="closeAdd" />
+      <EatAdd :item="editItem" @update="updateAdd" />
     </q-dialog>
 
   </div>
@@ -20,7 +20,7 @@ export default {
     return {
       loading: false,
       addDialog: false,
-      item: {}
+      editItem: {}
     }
   },
 
@@ -30,12 +30,13 @@ export default {
   },
 
   methods: {
-    openAdd (item) {
-      this.item = item
+    openAdd (row) {
+      this.editItem = row
       this.addDialog = true
     },
 
-    closeAdd () {
+    updateAdd () {
+      this.$refs.list.search()
       this.addDialog = false
     }
   }

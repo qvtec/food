@@ -4,7 +4,7 @@
     <q-btn v-else color="secondary" label="一覧表示" @click="showList" />
 
     <FoodList v-if="isList" @showEdit="showEdit" />
-    <FoodAdd v-else :editId="editId" :menuIds="menuIds" @close="showList" @openMenuAdd="openMenuAdd" />
+    <FoodAdd v-else :item="editItem" :menuIds="menuIds" @close="showList" @openMenuAdd="openMenuAdd" />
 
     <q-dialog v-model="menuDialog">
       <MenuAdd @add="addMenu" />
@@ -24,8 +24,8 @@ export default {
       loading: false,
       menuDialog: false,
       isList: false,
-      editId: 0,
-      menuIds: []
+      menuIds: [],
+      editItem: {}
     }
   },
 
@@ -41,12 +41,12 @@ export default {
     },
 
     showList () {
-      this.editId = 0
+      this.editItem = {}
       this.isList = true
     },
 
-    showEdit (id) {
-      this.editId = id
+    showEdit (row) {
+      this.editItem = row
       this.isList = false
     },
 

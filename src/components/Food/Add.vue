@@ -13,6 +13,9 @@
             :color="uploader.color"
             :factory="factoryFn"
             auto-upload
+            flat
+            bordered
+            style="max-width: 250px"
           />
         </div>
 
@@ -48,8 +51,8 @@
     </q-card-section>
 
     <q-card-actions>
-      <q-btn v-if="editId==0" class="full-width" color="accent" :disable="loading" label="登録" @click="add" />
-      <q-btn v-else class="full-width" color="secondary" :disable="loading" label="編集" @click="edit(editId)" />
+      <q-btn v-if="!isEdit" class="full-width" color="accent" :disable="loading" label="登録" @click="add" />
+      <q-btn v-else class="full-width" color="secondary" :disable="loading" label="編集" @click="edit" />
     </q-card-actions>
   </q-card>
 </template>
@@ -74,29 +77,16 @@ export default {
         color: 'primary',
         label: '画像'
       },
+      isEdit: false,
       errors: {}
     }
   },
 
-  mounted () {
-    if (this.editId === 0) {
-      return
+  created () {
+    if (Object.keys(this.item).length > 0) {
+      this.isEdit = true
+      this.form = this.item
     }
-
-    this.loading = true
-
-    this.$axios
-      .get('food/main/' + this.editId)
-      .then(response => {
-        console.log(response.data)
-        var data = response.data
-        this.form.date = date.formatDate(new Date(data.date), 'YYYY/MM/DD')
-        this.form.picture = data.picture
-        this.form.memo = data.memo
-        this.form.menu_ids = data.menu_ids
-      })
-      .catch(error => { console.log(error.response) })
-      .finally(() => { this.loading = false })
   },
 
   components: {
@@ -106,10 +96,9 @@ export default {
   },
 
   props: {
-    editId: {
-      type: Number,
-      required: false,
-      default: 0
+    item: {
+      type: Object,
+      required: false
     },
     menuIds: {
       type: Array,
@@ -124,41 +113,48 @@ export default {
       this.$axios
         .post('food/main', this.form)
         .then((response) => {
-          console.log(response.data)
-          this.$emit('close')
+          this.complete()
         })
         .catch((error) => {
-          console.log(error.response.data.errors)
-          this.errors = error.response.data.errors
-
-          if (Object.keys(this.errors).indexOf('picture') >= 0) {
-            this.uploader.color = 'accent'
-            this.uploader.label += ' ※' + this.errors.picture[0]
-          }
+          this.fail(error)
         })
         .finally(() => { this.loading = false })
     },
 
-    edit (id) {
+    edit () {
       this.loading = true
 
-      // @todo 更新処理
       this.$axios
-        .put('food/main/' + id, this.form)
+        .put('food/main/' + this.item.id, this.form)
         .then((response) => {
-          console.log(response.data)
-          this.$emit('close')
+          this.complete()
         })
         .catch((error) => {
-          console.log(error.response.data.errors)
-          this.errors = error.response.data.errors
-
-          if (Object.keys(this.errors).indexOf('picture') >= 0) {
-            this.uploader.color = 'accent'
-            this.uploader.label += ' ※' + this.errors.picture[0]
-          }
+          this.fail(error)
         })
         .finally(() => { this.loading = false })
+    },
+
+    complete () {
+      this.$q.notify({
+        type: 'positive',
+        message: '登録完了しました'
+      })
+      this.$emit('close')
+    },
+
+    fail (error) {
+      this.errors = error.response.data.errors
+
+      if (Object.keys(this.errors).indexOf('picture') >= 0) {
+        this.uploader.color = 'accent'
+        this.uploader.label += ' ※' + this.errors.picture[0]
+      }
+
+      this.$q.notify({
+        type: 'negative',
+        message: '入力内容を確認してください'
+      })
     },
 
     factoryFn (file) {
