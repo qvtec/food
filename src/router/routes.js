@@ -16,7 +16,8 @@ const routes = [
       { path: 'food', name: 'food', component: () => import('pages/Food.vue') },
       { path: 'menu', name: 'menu', component: () => import('pages/Menu.vue') },
       { path: 'eat', name: 'eat', component: () => import('pages/Eat.vue') },
-      { path: 'plan', name: 'plan', component: () => import('pages/Plan.vue') }
+      { path: 'plan', name: 'plan', component: () => import('pages/Plan.vue') },
+      { path: 'point', name: 'point', component: () => import('pages/Point.vue') }
     ]
   }
 ]

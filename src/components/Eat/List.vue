@@ -61,12 +61,6 @@
                 {{ menu.name }}
               </div>
             </q-card-section>
-            <q-separator />
-            <q-card-actions align="right">
-              <q-btn flat round color="red" icon="favorite" />
-              <q-btn flat round color="teal" icon="bookmark" />
-              <q-btn flat round color="primary" icon="share" />
-            </q-card-actions>
           </q-card>
         </div>
       </template>
@@ -102,7 +96,7 @@ export default {
           sortBy: 'desc',
           descending: false,
           page: 1,
-          rowsPerPage: 0
+          rowsPerPage: 5
         },
         columns: [
           { name: 'date', field: 'date', sortable: true },

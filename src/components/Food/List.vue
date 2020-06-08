@@ -66,6 +66,7 @@
               <q-btn flat round color="red" icon="favorite" />
               <q-btn flat round color="teal" icon="bookmark" />
               <q-btn flat round color="primary" icon="share" />
+              <q-btn flat round color="blue-grey" icon="delete" @click="clickDel(props.row.id)" />
             </q-card-actions>
           </q-card>
         </div>
@@ -129,6 +130,17 @@ export default {
       this.$emit('showEdit', row)
     },
 
+    clickDel (id) {
+      this.$q.dialog({
+        title: 'Confirm',
+        message: '削除しますか?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        this.delete(id)
+      })
+    },
+
     search () {
       this.loading = true
 
@@ -141,6 +153,26 @@ export default {
           this.errors = error.response.data.errors
         })
         .finally(() => { this.loading = false })
+    },
+
+    delete (id) {
+      this.loading = true
+
+      this.$axios
+        .delete('food/main/' + id)
+        .then(response => {
+          this.deleteComplete()
+        })
+        .catch(error => { console.log(error.response.data.errors) })
+        .finally(() => { this.loading = false })
+    },
+
+    deleteComplete () {
+      this.$q.notify({
+        type: 'positive',
+        message: '削除しました'
+      })
+      this.search()
     },
 
     openPicture (path) {

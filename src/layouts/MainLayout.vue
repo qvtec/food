@@ -6,10 +6,7 @@
         <q-btn dense flat round icon="menu" @click="left = !left" />
 
         <q-toolbar-title>
-          <!-- <q-avatar>
-            <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
-          </q-avatar> -->
-          毎日のごはん
+          <q-btn flat size="lg" :to="{ name: 'top' }" label="毎日のごはん" />
         </q-toolbar-title>
 
         <div>v{{ $q.version }}</div>
@@ -45,7 +42,7 @@
           </q-item-section>
         </q-item>
 
-        <q-item :to="{ name: 'food' }">
+        <q-item v-if="admin" :to="{ name: 'food' }">
           <q-item-section avatar>
             <q-avatar color="secondary" text-color="white" icon="add" />
           </q-item-section>
@@ -54,7 +51,7 @@
           </q-item-section>
         </q-item>
 
-        <q-item :to="{ name: 'menu' }">
+        <q-item v-if="admin" :to="{ name: 'menu' }">
           <q-item-section avatar>
             <q-avatar color="secondary" text-color="white" icon="list" />
           </q-item-section>
@@ -72,12 +69,21 @@
           </q-item-section>
         </q-item>
 
-        <q-item :to="{ name: 'plan' }">
+        <q-item v-if="admin" :to="{ name: 'plan' }">
           <q-item-section avatar>
             <q-avatar color="secondary" text-color="white" icon="event_available" />
           </q-item-section>
           <q-item-section v-if="user">
             予定
+          </q-item-section>
+        </q-item>
+
+        <q-item v-if="admin" :to="{ name: 'point' }">
+          <q-item-section avatar>
+            <q-avatar color="secondary" text-color="white" icon="grade" />
+          </q-item-section>
+          <q-item-section v-if="user">
+            ポイント
           </q-item-section>
         </q-item>
 
@@ -117,6 +123,10 @@ export default {
   computed: {
     user () {
       return this.$store.state.auth.user
+    },
+
+    admin () {
+      return this.user == null ? false : this.user.id === 1
     }
   },
 

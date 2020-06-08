@@ -7,6 +7,10 @@
           <qvt-date v-model="form.date" :errors="errors.date" />
         </div>
 
+        <div class="col-12" v-if="isEdit">
+          <q-img :src="form.path" style="max-width: 250px" />
+        </div>
+
         <div class="col-12">
           <q-uploader
             :label="uploader.label"
