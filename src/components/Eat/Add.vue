@@ -7,7 +7,12 @@
     </q-card-section>
 
     <q-card-section>
-      <q-img :src="item.path" />
+      <q-card flat bordered>
+        <q-img :src="item.path" />
+        <q-card-section>
+          <div style="white-space:pre-wrap; word-wrap:break-word;">{{item.memo}}</div>
+        </q-card-section>
+      </q-card>
     </q-card-section>
 
     <q-card-section>
