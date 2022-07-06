@@ -114,15 +114,9 @@ export default {
     }
   },
 
-  mounted () {
-    if (!this.$store.state.auth.user) {
-      this.$store.dispatch('auth/setUser')
-    }
-  },
-
   computed: {
     user () {
-      return this.$store.state.auth.user
+      return this.$store.getters['auth/user']
     },
 
     admin () {

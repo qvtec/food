@@ -7,7 +7,7 @@
 // https://quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
 
-module.exports = function (/* ctx */) {
+module.exports = function (ctx) {
   return {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
@@ -72,6 +72,15 @@ module.exports = function (/* ctx */) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
+      env: {
+        HOME_URL: ctx.dev
+          ? '"http://qlqv.' + process.env.APP_HOST + ':8000/#/"'
+          : '"https://home.' + process.env.APP_HOST + '/#/"',
+        API_URL: ctx.dev
+          ? '"http://server.' + process.env.APP_HOST + '/api/"'
+          : '"https://server.' + process.env.APP_HOST + '/api/"'
+      },
+
       vueRouterMode: 'hash', // available values: 'hash', 'history'
 
       // rtl: false, // https://quasar.dev/options/rtl-support
@@ -94,13 +103,17 @@ module.exports = function (/* ctx */) {
             formatter: require('eslint').CLIEngine.getFormatter('stylish')
           }
         })
+        cfg.watchOptions = {
+          aggregateTimeout: 200,
+          poll: 1000
+        }
       }
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
       https: false,
-      port: 8080,
+      port: 8000,
       open: true // opens browser window automatically
     },
 

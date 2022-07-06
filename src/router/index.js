@@ -38,7 +38,7 @@ export default function ({ store }) {
 
     // Authenticate
     if (to.matched.some(route => route.meta.authRequired)) {
-      if (store.getters['auth/isAuthenticated']) {
+      if (store.getters['auth/isAuth']) {
         next()
       } else {
         LoadingBar.stop()

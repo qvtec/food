@@ -51,6 +51,7 @@
             type="submit"
             color="primary"
             size="lg"
+            :loading="loading"
             @click="login()" />
         </q-card-actions>
       </q-card>
@@ -66,27 +67,28 @@ export default {
       credentials: {
         email: '',
         password: ''
-      }
+      },
+      remember: false,
+      loading: false
     }
   },
   methods: {
     login () {
       this.$refs.form.validate().then(success => {
         if (!success) return
+        this.loading = true
+
+        if (this.remember) {
+          this.credentials.remember = true
+        }
 
         this.$store.dispatch('auth/login', this.credentials)
-          .then(user => {
-            this.$q.notify({
-              type: 'positive',
-              message: 'login success'
-            })
-            setTimeout(() => this.$router.replace({ name: 'top' }), 700)
+          .then(() => {
+            this.$router.replace({ name: 'top' })
+            this.$q.notify({ type: 'positive', message: 'ログインに成功しました' })
           })
           .catch(error => {
-            this.$q.notify({
-              type: 'negative',
-              message: 'Invalid Login'
-            })
+            this.$q.notify({ type: 'negative', message: 'ログインに失敗しました' })
             console.error(`Not signed in: ${error.message}`)
           })
       })

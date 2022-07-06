@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { LocalStorage } from 'quasar'
 
 export default {
   namespaced: true,
 
   state: {
     user: null,
-    token: LocalStorage.getItem('token') || null
+    isAuth: false,
+    twoFactor: false
   },
 
   getters: {
@@ -14,67 +14,55 @@ export default {
       return state.user
     },
 
-    isAuthenticated (state) {
-      return state.token !== null
+    isAuth (state) {
+      return state.isAuth
+    },
+
+    twoFactor (state) {
+      return state.twoFactor
     }
   },
 
   mutations: {
-    SET_USER (state, user) {
+    SET_AUTH_USER (state, user) {
+      state.isAuth = true
       state.user = user
     },
 
-    RESET_USER (state) {
+    REMOVE_AUTH (state) {
+      state.isAuth = false
       state.user = null
     },
 
-    SET_TOKEN (state, token) {
-      state.token = token
-    },
-
-    RESET_TOKEN (state) {
-      state.token = null
+    SET_TWO_FACTOR (state, value) {
+      state.twoFactor = value
     }
   },
 
   actions: {
-    async login ({ commit }, creds) {
+    async login ({ dispatch }, creds) {
       await axios.post('login', creds)
-        .then((response) => {
-          const token = response.data.token
-          commit('SET_TOKEN', token)
-          commit('RESET_USER')
-          LocalStorage.set('token', token)
-          axios.defaults.headers.common.Authorization = 'Bearer ' + token
-        })
-        .catch((error) => {
-          LocalStorage.remove('token')
-          throw error
-        })
+      await dispatch('user')
     },
 
     async logout ({ commit }) {
       await axios.post('logout')
-        .then((response) => {
-          // console.log(response)
-          localStorage.removeItem('token')
-          commit('RESET_TOKEN')
-          commit('RESET_USER')
-        })
-        .catch((error) => {
-          // console.log(error)
-          throw error
-        })
+      commit('REMOVE_AUTH')
     },
 
-    async setUser ({ commit }, payload) {
-      await axios.post('user')
-        .then((response) => {
-          // console.log(response)
-          commit('SET_USER', response.data)
+    async user ({ commit }) {
+      await axios.get('me')
+        .then(response => {
+          axios.defaults.headers.Accept = 'application/json'
+          axios.defaults.withCredentials = true
+          if (!response.data) {
+            commit('REMOVE_AUTH')
+            return
+          }
+          commit('SET_AUTH_USER', response.data)
         })
-        .catch((error) => {
-          // console.log(error)
+        .catch(error => {
+          commit('REMOVE_AUTH')
           throw error
         })
     }
